@@ -100,7 +100,7 @@ jobs:
 
     - name: Connect to AWS EKS Cluster
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.REGION_DEFAULT }}
+      run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION_DEFAULT }}
 
     - name: Deploy k8s Resources to AWS EKS
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
