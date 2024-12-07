@@ -46,6 +46,10 @@ jobs:
       id: init
       run: terraform init
     
+    - name: Terraform Import
+      id: import
+      run: terraform import
+    
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
