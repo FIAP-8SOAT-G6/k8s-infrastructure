@@ -11,7 +11,7 @@ terraform {
     organization = "FIAP-SOAT-8-G6"
 
     workspaces {
-      name = "gh-actions"
+      name = "vitorrafael-workspace"
     }
   }
 }
