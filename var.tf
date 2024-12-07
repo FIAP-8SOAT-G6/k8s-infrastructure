@@ -14,6 +14,10 @@ variable "instanceType" {
   default = "t3a.small"
 }
 
+variable "accountIdVocLabs" {
+  default = "590183731131" // My Account ID - Check if it is possible to get this from an Environment Variable
+}
+
 variable "policyArn" {
   default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 }
