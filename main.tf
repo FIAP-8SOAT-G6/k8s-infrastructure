@@ -77,7 +77,7 @@ resource "aws_security_group" "sg" {
 
 resource "aws_eks_access_entry" "access-entry" {
   cluster_name      = aws_eks_cluster.eks-cluster.name
-  principal_arn     = "arn:aws:iam::${var.accountIdVocLabs}:role/voclabs"
+  principal_arn     = "arn:aws:iam::${var.accountIdVocLabs}:role/LabRole"
   kubernetes_groups = ["fiap"]
   type              = "STANDARD"
 }
@@ -85,7 +85,7 @@ resource "aws_eks_access_entry" "access-entry" {
 resource "aws_eks_access_policy_association" "eks-policy" {
   cluster_name  = aws_eks_cluster.eks-cluster.name
   policy_arn    = var.policyArn
-  principal_arn = "arn:aws:iam::${var.accountIdVocLabs}:role/voclabs"
+  principal_arn = "arn:aws:iam::${var.accountIdVocLabs}:role/LabRole"
 
   access_scope {
     type = "cluster"
