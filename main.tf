@@ -6,14 +6,6 @@ terraform {
     }
   }
   required_version = ">= 1.1.0"
-
-  cloud {
-    organization = "FIAP-SOAT-8-G6"
-
-    workspaces {
-      name = "vitorrafael-workspace"
-    }
-  }
 }
 
 provider "aws" {

@@ -96,7 +96,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{ env.REGION_DEFAULT }}
+        aws-region: ${{ env.AWS_REGION_DEFAULT }}
 
     - name: Connect to AWS EKS Cluster
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
