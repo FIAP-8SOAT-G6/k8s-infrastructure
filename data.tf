@@ -3,7 +3,7 @@ data "aws_iam_role" "labrole" {
 }
 
 data "aws_vpc" "vpc" {
-  cidr_block = vars.vpcCidr
+  cidr_block = var.vpcCidr
 }
 
 data "aws_subnets" "subnets" {
