@@ -39,15 +39,50 @@ jobs:
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ env.AWS_REGION_DEFAULT }}
     
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+
+    - name: Setup Terraform Backend
+      run: terraform -chdir=backend init
+
+    - name: Plan Terraform Backend
+      id: backend-plan
+      if: github.event_name == 'pull_request'
+      run: terraform -chdir=backend plan -no-color -input=false
+      continue-on-error: true
+
+    - name: Update Pull Request (Terraform Backend)
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request'
+      env:
+        PLAN: ${{ steps.plan.outputs.stdout }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Backend
+          #### Terraform Backend Plan 📖\`${{ steps.plan.outcome }}\`
+
+          <details><summary>Show Plan</summary>
+
+          \`\`\`terraform\n
+          ${process.env.PLAN}
+          \`\`\`
+
+          </details>
+
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
 
     - name: Terraform Init
       id: init
       run: terraform init
     
-    # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
     
@@ -57,7 +92,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      # if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request'
       run: terraform plan -no-color -input=false
       continue-on-error: true
 
@@ -91,8 +126,10 @@ jobs:
             body: output
           })
 
-      # On push to "main", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Backend Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform -chdir=backend apply -auto-approve -input=false
+
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
