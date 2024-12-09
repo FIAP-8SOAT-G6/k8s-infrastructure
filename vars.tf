@@ -11,7 +11,11 @@ variable "vpcCidr" {
 }
 
 variable "instanceType" {
-  default = "t3a.small"
+  default = "t3a.medium"
+}
+
+variable "accountIdVocLabs" {
+  default = "590183731131" // My Account ID - Check if it is possible to get this from an Environment Variable
 }
 
 variable "policyArn" {
