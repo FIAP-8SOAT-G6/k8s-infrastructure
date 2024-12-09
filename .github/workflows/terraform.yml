@@ -42,16 +42,16 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    - name: Setup Terraform Backend
+    - name: "[Backend] Terraform Init"
       run: terraform -chdir=backend init
 
-    - name: Plan Terraform Backend
+    - name: "[Backend] Terraform Plan"
       id: backend-plan
       if: github.event_name == 'pull_request'
       run: terraform -chdir=backend plan -no-color -input=false
       continue-on-error: true
 
-    - name: Update Pull Request (Terraform Backend)
+    - name: "[Backend] Update Pull Request"
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
@@ -126,7 +126,7 @@ jobs:
             body: output
           })
 
-    - name: Terraform Backend Apply
+    - name: "[Backend] Terraform Apply"
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform -chdir=backend apply -auto-approve -input=false
 
