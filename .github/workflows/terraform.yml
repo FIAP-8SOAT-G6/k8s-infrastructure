@@ -94,7 +94,7 @@ jobs:
       id: plan
       if: github.event_name == 'pull_request'
       env:
-        TF_VAR_accountId: ${{ env.ACCOUNT_ID }}
+        TF_VAR_accountId: ${{ secrets.AWS_ACCOUNT_ID }}
       run: terraform plan -no-color -input=false
       continue-on-error: true
 
@@ -135,7 +135,7 @@ jobs:
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       env: 
-        TF_VAR_accountId: ${{ env.ACCOUNT_ID }}
+        TF_VAR_accountId: ${{ secrets.AWS_ACCOUNT_ID }}
       run: terraform apply -auto-approve -input=false
 
     - name: Connect to AWS EKS Cluster
