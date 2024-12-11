@@ -16,18 +16,16 @@ env:
   CLUSTER_NAME: tech-challenge-lanchonete
 
 jobs:
-  terraform:
+  terraform-backend:
     name: 'Terraform'
     runs-on: ubuntu-latest
     environment: production
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -42,16 +40,16 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    - name: "[Backend] Terraform Init"
+    - name: Terraform Init
       run: terraform -chdir=backend init
 
-    - name: "[Backend] Terraform Plan"
+    - name: Terraform Plan
       id: backend-plan
       if: github.event_name == 'pull_request'
       run: terraform -chdir=backend plan -no-color -input=false
       continue-on-error: true
 
-    - name: "[Backend] Update Pull Request"
+    - name: Update Pull Request
       uses: actions/github-script@v6
       if: github.event_name == 'pull_request'
       env:
@@ -78,6 +76,37 @@ jobs:
             repo: context.repo.repo,
             body: output
           })
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform -chdir=backend apply -auto-approve -input=false
+  
+  terraform-eks:
+    name: 'Terraform EKS'
+    needs: terraform-backend
+    runs-on: ubuntu-latest
+    environment: production
+  
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.AWS_REGION_DEFAULT }}
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
 
     - name: Terraform Init
       id: init
@@ -127,10 +156,6 @@ jobs:
             repo: context.repo.repo,
             body: output
           })
-
-    - name: "[Backend] Terraform Apply"
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=backend apply -auto-approve -input=false
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
