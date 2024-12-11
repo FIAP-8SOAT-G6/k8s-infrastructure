@@ -17,7 +17,7 @@ env:
 
 jobs:
   terraform-backend:
-    name: 'Terraform'
+    name: 'Terraform Backend'
     runs-on: ubuntu-latest
     environment: production
 
