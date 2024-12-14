@@ -6,11 +6,3 @@ data "terraform_remote_state" "rds" {
         region = "us-east-1"
     }
 }
-
-variable "rds_endpoint" {
-    default = data.terraform_remote_state.rds.outputs.rds_endpoint
-}
-
-variable "rds_security_group_id" {
-    default = data.terraform_remote-state.rds.outputs.rds_security_group_id
-}
