@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lanchonete-api
+  labels:
+    app: lanchonete-api
+spec:
+  template:
+    metadata:
+      name: lanchonete-api
+      labels:
+        app: lanchonete-api
+    spec:
+      initContainers:
+        - name: wait-for-database
+          image: alpine
+          envFrom:
+            - configMapRef:
+                name: lanchonete-api-config
+          command:
+            [
+              "sh",
+              "-c",
+              'until nc -z $POSTGRES_HOST $POSTGRES_PORT; do echo "waiting for database"; sleep 5; done; echo "Database is up!"',
+            ]
+
+      containers:
+        - name: lanchonete-api-container
+          image: vitorrafael/lanchonete-api:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: lanchonete-api-config
+            - secretRef:
+                name: lanchonete-api-secret
+
+          ports:
+            - containerPort: 8080
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health/liveness
+          #     port: 8080
+          #   periodSeconds: 10
+          #   failureThreshold: 3
+          #   initialDelaySeconds: 20
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health/readiness
+          #     port: 8080
+          #   periodSeconds: 10
+          #   failureThreshold: 5
+          #   initialDelaySeconds: 3
+          resources:
+            requests:
+              memory: "100M"
+              cpu: "250m"
+            limits:
+              memory: "200M"
+              cpu: "5000m"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lanchonete-api

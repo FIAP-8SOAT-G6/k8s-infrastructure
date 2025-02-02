@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-db-config
+  labels:
+    app: orders-db
+data:
+  POSTGRES_DB: "orders-database"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PORT: "5433"
+  VOLUME_DB_DATA: "/var/lib/postgresql/data"

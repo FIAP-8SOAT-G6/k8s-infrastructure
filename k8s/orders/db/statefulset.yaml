@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orders-db-statefulset
+spec:
+  serviceName: orders-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-db
+  template:
+    metadata:
+      labels:
+        app: orders-db
+    spec:
+      containers:
+        - name: orders-db
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: orders-db-config
+            - secretRef:
+                name: orders-db-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              subPath: orders-db-data
+              name: orders-db-data
+          image: postgres:latest
+      volumes:
+        - name: orders-db-data
+          persistentVolumeClaim:
+            claimName: orders-db-volume-claim

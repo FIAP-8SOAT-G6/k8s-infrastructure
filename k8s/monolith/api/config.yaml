@@ -6,4 +6,7 @@ metadata:
     app: lanchonete-api
 data:
   API_PORT: "31200"
-  
+  POSTGRES_HOST: "lanchonete-db"
+  POSTGRES_PORT: "5432" 
+  POSTGRES_DB: "lanchonete-database"
+  POSTGRES_USER: "postgres"
