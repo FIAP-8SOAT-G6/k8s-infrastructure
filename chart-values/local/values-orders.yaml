@@ -10,17 +10,16 @@ configMapData:
   CUSTOMERS_SERVICE_HOST: lanchonete-service
   CUSTOMERS_SERVICE_PORT: "8081"
 
-  POSTGRES_HOST: orders-db
-  POSTGRES_PORT: "5432"
-  POSTGRES_DB: "orders-database"
-  POSTGRES_USER: "postgres"
   DATABASE_HOST: orders-db
   DATABASE_PORT: "5432"
+  DATABASE_NAME: "orders-database"
+  DATABASE_USER: "postgres"
+  DATABASE_DIALECT: "postgres"
 
 secret:
   enabled: true
   data:
-    POSTGRES_PASSWORD: "MTIzNDU2"
+    DATABASE_PASSWORD: "MTIzNDU2"
 
 image:
   repository: "vitorrafael/orders-api"
