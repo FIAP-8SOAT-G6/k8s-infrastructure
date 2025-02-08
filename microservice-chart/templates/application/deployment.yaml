@@ -1,45 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-api
+  name: {{ .Release.Name }}
   labels:
-    app: orders-api
-    type: microservice
+    app: {{ .Release.Name }}
 spec:
-  replicas: 3
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: orders-api
-
+      app: {{ .Release.Name }}
   template:
     metadata:
-      name: orders-api
       labels:
-        app: orders-api
-        type: microservice
+        app: {{ .Release.Name }}
     spec:
       initContainers:
         - name: wait-for-database
           image: alpine
           envFrom:
             - configMapRef:
-                name: orders-api-config
+                name: {{ .Release.Name }}-config
           command:
             [
               "sh",
               "-c",
-              'until nc -z $POSTGRES_HOST $POSTGRES_PORT; do echo "waiting for database"; sleep 5; done; echo "Database is up!"',
+              'until nc -z $DATABASE_HOST $DATABASE_PORT; do echo "waiting for database"; sleep 5; done; echo "Database is up!"',
             ]
-
       containers:
-        - name: orders-api-container
-          image: vitorrafael/orders-api:latest
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
-                name: orders-api-config
+                name: {{ .Release.Name }}-config
             - secretRef:
-                name: orders-api-secret
+                name: {{ .Release.Name }}-secret
           ports:
             - containerPort: 8080
           # livenessProbe:
@@ -58,8 +53,8 @@ spec:
           #   initialDelaySeconds: 3
           resources:
             requests:
-              memory: "100M"
-              cpu: "250m"
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
             limits:
-              memory: "200M"
-              cpu: "5000m"
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
