@@ -39,3 +39,10 @@ helm install lanchonete microservice-chart -f chart-values/local/values-lanchone
 ```bash
 helm install orders microservice-chart -f chart-values/local/values-orders.yaml
 ```
+
+### Ingress
+O manifesto `k8s/local-ingress` configura um recurso Kubernetes Ingress para execução no local com base no NGINX Ingress Controller.
+1. Instale o NGINX Ingress Controller conforme o [Instalation Guide](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start).
+2. Execute o comando `kubectl apply -f k8s/local-ingress.yaml` e o comando `kubectl get ingress`.
+3. Adicione os host do `local-ingress` ao `/etc/hosts` da sua máquina, mapeando-os para o `ADDRESS` informado no `kubectl get ingress`.
+
