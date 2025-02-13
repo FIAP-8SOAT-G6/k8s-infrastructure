@@ -1,3 +1,4 @@
+{{- if .Values.database.useStatefulSet }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
     app:  {{ .Release.Name }}-db
 data:
   {{- .Values.database.configMapData | toYaml | nindent 2 }}
+{{- end }}
