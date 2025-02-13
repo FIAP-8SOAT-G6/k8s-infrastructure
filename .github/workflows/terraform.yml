@@ -110,7 +110,7 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: terraform chdir=eks validate -no-color
+        run: terraform -chdir=eks validate -no-color
 
       - name: Terraform Plan
         id: plan
