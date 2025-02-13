@@ -110,7 +110,7 @@ jobs:
 
       - name: Terraform Validate
         id: validate
-        run: terraform chdir=eks validate -no-color
+        run: terraform -chdir=eks validate -no-color
 
       - name: Terraform Plan
         id: plan
@@ -155,43 +155,38 @@ jobs:
         env:
           TF_VAR_accountId: ${{ secrets.AWS_ACCOUNT_ID }}
         run: terraform -chdir=eks apply -auto-approve -input=false
-  
+
   lanchonete-deploy:
-      name: "Deploy Lanchonete"
-      needs: terraform-eks
-      runs-on: ubuntu-latest
-      environment: production
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+    name: "Deploy Lanchonete"
+    needs: terraform-eks
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        - name: Configure AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-            aws-region: ${{ env.AWS_REGION_DEFAULT }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION_DEFAULT }}
 
-        - name: Connect to AWS EKS Cluster
-          if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-          run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION_DEFAULT }}
+      - name: Connect to AWS EKS Cluster
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION_DEFAULT }}
 
-        - name: Install Helm
-          id: helm-install
-          if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-          uses: azure/setup-helm@v3
+      - name: Install Helm
+        id: helm-install
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: azure/setup-helm@v3
 
-        - name: Deploy 'Lanchonete' Monolith Application
-          if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-          run: |
-            helm upgrade --install lanchonete microservice-chart -f chart-values/aws/values-lanchonete.yaml
+      - name: Deploy 'Lanchonete' Monolith Application
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          helm upgrade --install lanchonete microservice-chart -f chart-values/aws/values-lanchonete.yaml
 
-        - name: Deploy 'Lanchonete' Monolith Application
-          if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-          run: |
-            helm upgrade --install lanchonete microservice-chart -f chart-values/aws/values-lanchonete.yaml
-  
   orders-deploy:
     name: "Deploy Orders"
     needs: terraform-eks
