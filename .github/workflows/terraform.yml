@@ -186,11 +186,6 @@ jobs:
           if: github.ref == 'refs/heads/main' && github.event_name == 'push'
           run: |
             helm upgrade --install lanchonete microservice-chart -f chart-values/aws/values-lanchonete.yaml
-
-        - name: Deploy 'Lanchonete' Monolith Application
-          if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-          run: |
-            helm upgrade --install lanchonete microservice-chart -f chart-values/aws/values-lanchonete.yaml
   
   orders-deploy:
     name: "Deploy Orders"
