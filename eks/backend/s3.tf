@@ -18,7 +18,7 @@ resource "aws_s3_bucket_public_access_block" "backend" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_acl" "example" {
+resource "aws_s3_bucket_acl" "backend" {
   depends_on = [
     aws_s3_bucket_ownership_controls.backend,
     aws_s3_bucket_public_access_block.backend,
@@ -26,4 +26,32 @@ resource "aws_s3_bucket_acl" "example" {
 
   bucket = aws_s3_bucket.backend.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_policy" "backend" {
+  bucket = aws_s3_bucket.backend.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    ID      = "Policy"
+    Statement = [
+      {
+        Sid    = "HTTPSOnly"
+        Effect = "Deny"
+        Principal = {
+          "AWS" : "*"
+        }
+        Action = "s3:*"
+        Resource = [
+          aws_s3_bucket.backend.id,
+          "${aws_s3_bucket.mycompliantbucket.arn}/*",
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+    ]
+  })
 }
