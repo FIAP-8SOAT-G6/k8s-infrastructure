@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      automountServiceAccountToken: false
       initContainers:
         - name: wait-for-database
           image: alpine
@@ -28,7 +29,6 @@ spec:
             ]
       containers:
         - name: {{ .Release.Name }}
-          automountServiceAccountToken: false
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
