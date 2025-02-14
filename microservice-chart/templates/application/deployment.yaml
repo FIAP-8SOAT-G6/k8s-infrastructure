@@ -28,6 +28,7 @@ spec:
             ]
       containers:
         - name: {{ .Release.Name }}
+          automountServiceAccountToken: false
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
@@ -58,4 +59,3 @@ spec:
             limits:
               memory: "{{ .Values.resources.limits.memory }}"
               cpu: "{{ .Values.resources.limits.cpu }}"
-        automountServiceAccountToken: false
