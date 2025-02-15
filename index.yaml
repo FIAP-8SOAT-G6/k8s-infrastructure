@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  microservice:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-15T17:28:23.38897859Z"
+    description: A chart for microservices of Tech Challenge Lanchonete, allowing
+      the creation of an application tied with a database
+    digest: cb12b5cdcd99f9a9891b1be447503efec1d956f82b17af6e346b14369c77561c
+    name: microservice
+    type: application
+    urls:
+    - https://github.com/FIAP-8SOAT-G6/k8s-infrastructure/releases/download/microservice-0.1.0/microservice-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-02-15T17:28:23.388984421Z"
