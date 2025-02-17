@@ -12,4 +12,16 @@ entries:
     urls:
     - https://github.com/FIAP-8SOAT-G6/k8s-infrastructure/releases/download/microservice-0.1.0/microservice-0.1.0.tgz
     version: 0.1.0
-generated: "2025-02-15T17:28:23.388984421Z"
+  stateless-microservice:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2025-02-17T01:36:29.97350343Z"
+    description: A chart for stateless microservices of Tech Challenge Lanchonete,
+      allowing the creation of only an application
+    digest: d8a49b2d42cbb781090a464410eda5043996a99b357f917d92f21fcbea0b8831
+    name: stateless-microservice
+    type: application
+    urls:
+    - https://github.com/FIAP-8SOAT-G6/k8s-infrastructure/releases/download/stateless-microservice-0.1.0/stateless-microservice-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-02-17T01:36:29.973513188Z"
