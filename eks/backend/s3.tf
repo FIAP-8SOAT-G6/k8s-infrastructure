@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "backend" {
-  bucket = "tcl-terraform-bucket-vitorrafael"
+  bucket = "tcl-terraform-bucket-apresentacao"
 }
 
 resource "aws_s3_bucket_ownership_controls" "backend" {
